@@ -277,4 +277,63 @@ pub async fn update_settings(request: UpdateSettingsRequest) -> Result<(), Strin
     info!("Settings updated: {:?}", request.settings);
     
     Ok(())
+}
+
+#[tauri::command]
+pub async fn trigger_n8n_workflow(workflow_name: String, payload: serde_json::Value) -> Result<String, String> {
+    info!("Triggering n8n workflow: {}", workflow_name);
+    
+    // TODO: Implement n8n workflow triggering
+    // This would typically make an HTTP request to n8n's webhook endpoint
+    Ok(format!("Workflow {} triggered successfully", workflow_name))
+}
+
+#[tauri::command]
+pub async fn get_n8n_workflows() -> Result<Vec<serde_json::Value>, String> {
+    info!("Getting n8n workflows");
+    
+    // TODO: Implement n8n workflow listing
+    // This would typically make an HTTP request to n8n's API
+    Ok(vec![])
+}
+
+#[tauri::command]
+pub async fn deploy_n8n_workflow(workflow_data: serde_json::Value) -> Result<String, String> {
+    info!("Deploying n8n workflow");
+    
+    // TODO: Implement n8n workflow deployment
+    // This would typically make an HTTP request to n8n's API
+    Ok("Workflow deployed successfully".to_string())
+}
+
+#[tauri::command]
+pub async fn run_system_tests() -> Result<serde_json::Value, String> {
+    info!("Running system tests");
+    
+    use crate::tests::TestSuite;
+    
+    match TestSuite::new().await {
+        Ok(test_suite) => {
+            match test_suite.run_all_tests().await {
+                Ok(results) => {
+                    let summary = results.summary();
+                    let all_passed = results.all_passed();
+                    
+                    let result_json = serde_json::json!({
+                        "summary": summary,
+                        "all_passed": all_passed,
+                        "database": format!("{}", results.database),
+                        "agents": format!("{}", results.agents),
+                        "system": format!("{}", results.system),
+                        "performance": format!("{}", results.performance),
+                        "security": format!("{}", results.security)
+                    });
+                    
+                    Ok(result_json)
+                }
+                Err(e) => Err(format!("Test execution failed: {}", e))
+            }
+        }
+        Err(e) => Err(format!("Test suite initialization failed: {}", e))
+    }
 } 

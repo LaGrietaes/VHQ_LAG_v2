@@ -1,16 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Settings,
-  Menu,
-  X,
-  Zap,
-  UserCog,
-  Ghost,
-  Brain,
-  FileText
-} from 'lucide-react';
 
 // Utility for live clocks
 function useLiveTime(offset = 0) {
@@ -628,220 +616,106 @@ function PersonalTodo() {
 }
 
 // Navigation Component with Collapsible Drawer
-function Navigation({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; setSidebarOpen: (open: boolean) => void }) {
-  const location = useLocation();
-  
-  const navigation = [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-    { name: 'Agents', href: '/agents', icon: UserCog },
-    { name: 'Workflows', href: '/workflows', icon: Zap },
-    { name: 'Files', href: '/files', icon: FileText },
-    { name: 'Settings', href: '/settings', icon: Settings },
-  ];
-
-  return (
-    <>
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      {/* Mobile sidebar */}
-      {sidebarOpen && (
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-gray-900 border-r border-gray-800 z-50 lg:hidden">
-          <div className="flex h-16 items-center justify-between px-4 border-b border-gray-800">
-            <div className="flex items-center space-x-2">
-              <img src="/logo.svg" alt="VHQ LAG" className="h-8 w-auto mr-2" />
-              <h1 className="text-xl font-bold text-white">VHQ LAG v2</h1>
-            </div>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-white"
-            >
-              <X className="h-6 w-6" />
-            </button>
-          </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                    isActive 
-                      ? 'bg-gray-800 text-white' 
-                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                  }`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <item.icon className="mr-3 h-5 w-5" />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-      )}
-
-      {/* Desktop collapsible sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-16 lg:flex-col group hover:w-64 transition-all duration-300 ease-in-out z-50">
-        <div className="flex flex-col flex-grow bg-gray-900/40 backdrop-blur-md border-r border-gray-800/50">
-          {/* Logo section */}
-          <div className="flex h-16 items-center justify-center border-b border-gray-800/50 group-hover:justify-start group-hover:px-4 group-hover:w-full group-hover:h-auto group-hover:py-2">
-            <img src="/logo-small.svg" alt="VHQ LAG" className="h-6 w-auto group-hover:hidden" />
-            <img src="/logo.svg" alt="VHQ LAG" className="h-auto w-full hidden group-hover:block" />
-          </div>
-          
-          {/* Navigation */}
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                    isActive 
-                      ? 'bg-gray-800/60 text-white' 
-                      : 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
-                  }`}
-                  title={item.name}
-                >
-                  <item.icon className="h-5 w-5 group-hover:mr-3" />
-                  <span className="hidden group-hover:block opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    {item.name}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-      </div>
-    </>
-  );
-}
+// Navigation component removed - now handled globally by Layout component
 
 // Main Dashboard Component
 export default function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  
   return (
-    <div className="h-screen bg-black text-white overflow-hidden">
-      {/* Navigation Sidebar */}
-      <Navigation sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      
-      {/* Main Content */}
-      <div className="lg:pl-16 relative z-10">
-        {/* Mobile header */}
-        <div className="sticky top-0 z-40 flex h-16 items-center gap-x-4 border-b border-gray-800 bg-gray-900 px-4 shadow-sm lg:hidden">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="text-gray-400 hover:text-white"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-          <div className="flex items-center space-x-2">
-            <img src="/logo.svg" alt="VHQ LAG" className="h-6 w-auto mr-2" />
-            <h1 className="text-lg font-semibold text-white">VHQ LAG v2</h1>
+    <div className="h-screen bg-black text-white overflow-hidden w-full">
+      {/* Main Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 h-[calc(100vh-4rem)] p-1 w-full">
+        {/* Left Column */}
+        <div className="flex flex-col gap-1">
+          {/* Calendar Card with integrated World Clock and Timer */}
+          <div className="bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-3 h-[460px] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path d="M8 2v4"></path>
+                  <path d="M16 2v4"></path>
+                  <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                  <path d="M3 10h18"></path>
+                </svg>
+                <h2 className="text-lg font-bold text-white font-mono">CALENDAR & SYSTEM</h2>
+              </div>
+            </div>
+            <Calendar />
           </div>
+
+          {/* Personal TODO */}
+          <PersonalTodo />
         </div>
 
-        {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 h-[calc(100vh-4rem)] p-1">
-          {/* Left Column */}
-          <div className="flex flex-col gap-1">
-            {/* Calendar Card with integrated World Clock and Timer */}
-            <div className="bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-3 h-[460px] flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-2">
-                  <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path d="M8 2v4"></path>
-                    <path d="M16 2v4"></path>
-                    <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                    <path d="M3 10h18"></path>
-                  </svg>
-                  <h2 className="text-lg font-bold text-white font-mono">CALENDAR & SYSTEM</h2>
+        {/* Right Column */}
+        <div className="flex flex-col gap-1">
+          {/* Task Queue */}
+          <div className="bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-3 h-[460px] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <svg className="h-5 w-5 text-red-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path d="M21 10.656V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.344"></path>
+                  <path d="m9 11 3 3L22 4"></path>
+                </svg>
+                <h2 className="text-lg font-bold text-white font-mono">TASK QUEUE</h2>
+              </div>
+              <button className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive shadow-sm h-8 gap-1.5 px-3 has-[&>svg]:px-2.5 bg-red-600 hover:bg-red-700 text-white font-mono min-h-[32px]">
+                <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path d="M5 12h14"></path>
+                  <path d="M12 5v14"></path>
+                </svg>ADD
+              </button>
+            </div>
+            <div className="space-y-3 mb-6">
+              <h3 className="text-sm font-bold text-gray-400 font-mono">PENDING (4)</h3>
+              <div className="space-y-2">
+                <div className="border border-gray-800 p-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-red-400"></div>
+                      <span className="text-sm text-white font-mono">Process audio files</span>
+                    </div>
+                    <span className="text-xs text-gray-400 font-mono">HIGH</span>
+                  </div>
+                </div>
+                <div className="border border-gray-800 p-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-yellow-400"></div>
+                      <span className="text-sm text-white font-mono">Generate content</span>
+                    </div>
+                    <span className="text-xs text-gray-400 font-mono">MEDIUM</span>
+                  </div>
                 </div>
               </div>
-              <Calendar />
             </div>
-
-            {/* Personal TODO */}
-            <PersonalTodo />
           </div>
 
-          {/* Right Column */}
-          <div className="flex flex-col gap-1">
-            {/* Task Queue */}
-            <div className="bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-3 h-[460px] flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-2">
-                  <svg className="h-5 w-5 text-red-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path d="M21 10.656V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.344"></path>
-                    <path d="m9 11 3 3L22 4"></path>
-                  </svg>
-                  <h2 className="text-lg font-bold text-white font-mono">TASK QUEUE</h2>
-                </div>
-                <button className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive shadow-sm h-8 gap-1.5 px-3 has-[&>svg]:px-2.5 bg-red-600 hover:bg-red-700 text-white font-mono min-h-[32px]">
-                  <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path d="M5 12h14"></path>
-                    <path d="M12 5v14"></path>
-                  </svg>ADD
-                </button>
-              </div>
-              <div className="space-y-3 mb-6">
-                <h3 className="text-sm font-bold text-gray-400 font-mono">PENDING (4)</h3>
-                <div className="space-y-2">
-                  <div className="border border-gray-800 p-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-red-400"></div>
-                        <span className="text-sm text-white font-mono">Process audio files</span>
-                      </div>
-                      <span className="text-xs text-gray-400 font-mono">HIGH</span>
-                    </div>
-                  </div>
-                  <div className="border border-gray-800 p-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-yellow-400"></div>
-                        <span className="text-sm text-white font-mono">Generate content</span>
-                      </div>
-                      <span className="text-xs text-gray-400 font-mono">MEDIUM</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {/* Project Timeline */}
+          <div className="bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-3 h-[460px] flex flex-col overflow-hidden">
+            <div className="flex items-center space-x-2 mb-4">
+              <svg className="h-5 w-5 text-red-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <h2 className="text-lg font-bold text-white font-mono">PROJECT TIMELINE</h2>
             </div>
-
-            {/* Project Timeline */}
-            <div className="bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-3 h-[460px] flex flex-col overflow-hidden">
-              <div className="flex items-center space-x-2 mb-4">
-                <svg className="h-5 w-5 text-red-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                <h2 className="text-lg font-bold text-white font-mono">PROJECT TIMELINE</h2>
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h3 className="text-sm font-bold text-gray-400 font-mono">CURRENT</h3>
-                  <div className="border border-gray-800 p-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-white font-mono">VHQ Dashboard Development</span>
-                      <span className="text-xs text-green-400 font-mono">75%</span>
-                    </div>
-                    <div className="w-full bg-gray-800 h-1 mt-2">
-                      <div className="bg-green-400 h-1" style={{ width: '75%' }}></div>
-                    </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold text-gray-400 font-mono">CURRENT</h3>
+                <div className="border border-gray-800 p-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-white font-mono">VHQ Dashboard Development</span>
+                    <span className="text-xs text-green-400 font-mono">75%</span>
+                  </div>
+                  <div className="w-full bg-gray-800 h-1 mt-2">
+                    <div className="bg-green-400 h-1" style={{ width: '75%' }}></div>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-sm font-bold text-gray-400 font-mono">UPCOMING</h3>
-                  <div className="border border-gray-800 p-2">
-                    <span className="text-sm text-white font-mono">Agent Integration</span>
-                  </div>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-sm font-bold text-gray-400 font-mono">UPCOMING</h3>
+                <div className="border border-gray-800 p-2">
+                  <span className="text-sm text-white font-mono">Agent Integration</span>
                 </div>
               </div>
             </div>

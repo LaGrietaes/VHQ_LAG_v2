@@ -6,6 +6,8 @@ use tracing::{info, error};
 mod commands;
 mod database;
 mod agents;
+mod system;
+mod tests;
 
 #[tokio::main]
 async fn main() {
@@ -37,7 +39,11 @@ async fn main() {
             commands::get_ghost_models,
             commands::get_vitra_languages,
             commands::get_workflow_status,
-            commands::update_settings
+            commands::update_settings,
+            commands::trigger_n8n_workflow,
+            commands::get_n8n_workflows,
+            commands::deploy_n8n_workflow,
+            commands::run_system_tests
         ])
         .setup(|_app| {
             info!("VHQ LAG v2 initialized successfully");

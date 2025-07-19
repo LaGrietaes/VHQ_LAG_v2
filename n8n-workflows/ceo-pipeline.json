@@ -1,0 +1,157 @@
+{
+  "name": "CEO Task Orchestration Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "/task_queue",
+        "fileTypes": ["json"],
+        "options": {}
+      },
+      "id": "task-trigger",
+      "name": "Task Trigger",
+      "type": "n8n-nodes-base.fileTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "command": "cargo run --bin ceo_lag",
+        "arguments": "{{ $json.filePath }}",
+        "options": {
+          "cwd": "/path/to/vhq_lag_v2"
+        }
+      },
+      "id": "execute-ceo",
+      "name": "Execute CEO",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "success",
+              "leftValue": "={{ $json.exitCode }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-success",
+      "name": "Check Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "source": "={{ $json.outputPath }}",
+        "destination": "/completed_tasks",
+        "options": {}
+      },
+      "id": "move-file",
+      "name": "Move File",
+      "type": "n8n-nodes-base.moveFiles",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "message": "CEO task orchestration completed successfully",
+        "options": {}
+      },
+      "id": "success-notification",
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.notification",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "message": "CEO task orchestration failed",
+        "options": {}
+      },
+      "id": "error-notification",
+      "name": "Error Notification",
+      "type": "n8n-nodes-base.notification",
+      "typeVersion": 1,
+      "position": [900, 400]
+    }
+  ],
+  "connections": {
+    "Task Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute CEO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute CEO": {
+      "main": [
+        [
+          {
+            "node": "Check Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Success": {
+      "main": [
+        [
+          {
+            "node": "Move File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move File": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "ceo-pipeline",
+  "tags": ["vhq", "orchestration", "ceo"]
+} 

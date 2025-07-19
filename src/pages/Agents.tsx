@@ -181,7 +181,7 @@ const Agents: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 w-full">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-white">Agent Management</h1>
         <Button onClick={loadAgentData} variant="outline">
